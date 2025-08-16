@@ -59,5 +59,5 @@ We welcome contributions!
 5. Create a Pull Request
 ---
 
-❤️ Made with care by TechBytes — advancing healthcare through collaboration and innovation.
+❤️ Made with care — advancing healthcare through collaboration and innovation.
 
