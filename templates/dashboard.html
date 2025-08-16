@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SwasthyaAI – Smart Health Assistant</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Poppins', sans-serif; background: #f8fafc; }
+    .flash-popup {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #333;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+.flash-popup.success {
+  background: #28a745; /* green */
+}
+.flash-popup.error {
+  background: #dc3545; /* red */
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+  </style>
+</head>
+
+<body class="bg-gray-50">
+<div class="flex min-h-screen">
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+  <div id="flash-container" style="position:fixed; top:20px; right:20px; z-index:9999;">
+    {% for category, msg in messages %}
+      <div class="flash-msg {% if category=='success' %}bg-green-600{% else %}bg-red-600{% endif %} text-white" style="padding:10px 15px; border-radius:6px; margin-bottom:10px; box-shadow:0 4px 8px rgba(0,0,0,0.2); opacity:0; transform:translateX(120%); transition:all 0.5s;">
+        {{ msg }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const msgs = document.querySelectorAll('.flash-msg');
+      msgs.forEach((el, i) => {
+        setTimeout(() => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateX(0)';
+        }, i * 200);
+        setTimeout(() => {
+          el.style.opacity = '0';
+          el.style.transform = 'translateX(120%)';
+          setTimeout(() => el.remove(), 500);
+        }, 3000 + i * 200);
+      });
+    });
+  </script>
+{% endif %}
+{% endwith %}
+
+<!-- your dashboard content here -->
+</body>
+
+  <!-- Sidebar -->
+<aside class="w-64 bg-white shadow-md hidden md:block fixed h-full flex flex-col justify-between">
+  <div>
+    <div class="p-6 flex items-center space-x-3">
+      <img src="/static/images/logo.jpg" alt="Logo" class="w-8 h-8 rounded-full" />
+      <span class="text-xl font-bold text-red-600">SwasthyaAI</span>
+    </div>
+    <nav class="p-4 space-y-3">
+      <a href="#bmi-section" class="block px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 font-medium">BMI Checker</a>
+      <a href="#bp-section" class="block px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 font-medium">BP & Blood Sugar</a>
+      <a href="#prediction-section" class="block px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 font-medium">Disease Prediction</a>
+      <a href="#tele-section" class="block px-3 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 font-medium">Teleconsultation</a>
+    </nav>
+  </div>
+
+  <!-- User info at bottom -->
+  <div class="p-4 border-t flex items-center space-x-3">
+    <div class="w-8 h-8 rounded-full bg-red-500 text-white font-bold flex items-center justify-center text-lg">
+      {{ session['username'][0] if session['username'] else '?' }}
+    </div>
+    <span class="font-medium">{{ session['username'] if session['username'] else 'Guest' }}</span>
+  </div>
+</aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 ml-0 md:ml-64 p-6 space-y-10">
+
+    <!-- Welcome Banner -->
+    <section class="bg-pink-100 rounded-xl shadow-md p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900">Dear {{ username }},</h1>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome to SwasthyaAI</h1>
+
+        <p class="text-lg text-gray-700 mb-4">
+          An AI-powered health assistant for smart, accessible, and early diagnosis. Built for India.
+        </p>
+        <div class="flex gap-4">
+        </div>
+      </div>
+      <div class="flex-shrink-0">
+        <img src="/static/images/logo.jpg" alt="SwasthyaAI Logo" class="w-40 h-auto rounded-lg shadow-md" />
+      </div>
+    </section>
+
+    <!-- BMI Checker -->
+    <section id="bmi-section" class="bg-white rounded-xl shadow-md p-6">
+      <h2 class="text-xl font-semibold mb-4">BMI Checker</h2>
+      <label class="block mb-2 text-sm">Gender</label>
+      <select id="bmi-gender" class="w-full p-2 border rounded-lg mb-3">
+        <option>Male</option><option>Female</option>
+      </select>
+      <label class="block mb-2 text-sm">Height (cm)</label>
+      <input type="number" id="bmi-height" class="w-full p-2 border rounded-lg mb-3">
+      <label class="block mb-2 text-sm">Weight (kg)</label>
+      <input type="number" id="bmi-weight" class="w-full p-2 border rounded-lg mb-3">
+      <button onclick="calcBMI()" class="px-4 py-2 bg-red-600 text-white rounded-lg">Check BMI</button>
+      <div id="bmi-result" class="mt-3 p-3 bg-gray-100 rounded-lg"></div>
+    </section>
+
+    <!-- BP & Blood Sugar Analyser -->
+    <section id="bp-section" class="bg-white rounded-xl shadow-md p-6">
+      <h2 class="text-xl font-semibold mb-4">BP & Blood Sugar Analyser</h2>
+      <label class="block mb-2 text-sm">Blood Pressure (Systolic)</label>
+      <input type="number" id="bp-sys" class="w-full p-2 border rounded-lg mb-3">
+      <label class="block mb-2 text-sm">Blood Pressure (Diastolic)</label>
+      <input type="number" id="bp-dia" class="w-full p-2 border rounded-lg mb-3">
+      <label class="block mb-2 text-sm">Blood Sugar (mg/dL)</label>
+      <input type="number" id="sugar" class="w-full p-2 border rounded-lg mb-3">
+      <button onclick="checkBP()" class="px-4 py-2 bg-red-600 text-white rounded-lg">Check</button>
+      <div id="bp-result" class="mt-3 p-3 bg-gray-100 rounded-lg"></div>
+    </section>
+
+   <!-- Disease Prediction / Chatbot -->
+<section id="prediction-section" class="bg-white rounded-xl shadow-md p-6">
+  <h2 class="text-xl font-semibold mb-4">AI Health Assistant</h2>
+
+  <div id="chat" class="mt-4 p-3 bg-gray-100 rounded-lg h-80 overflow-auto text-sm">
+    <div class="bot-message">
+      <div class="font-medium text-red-600 mb-1">SwasthyaAI</div>
+      <div>Hello! I'm your AI health assistant. How can I help you today?</div>
+    </div>
+  </div>
+
+  <form id="chat-form" class="flex gap-2 mt-3" onsubmit="return sendToServer(event)">
+    <input type="text" id="symptom" name="symptom"
+           class="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+           placeholder="Type your symptoms or question..." required />
+    <button type="submit" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg">
+      Send
+    </button>
+  </form>
+
+  <div class="flex gap-3 mt-4 justify-end">
+    <button id="clear-chat" 
+            class="px-4 py-2 bg-red-400 hover:bg-red-500 text-white rounded-lg font-semibold"
+            type="button">
+      Clear Chat
+    </button>
+    <button id="end-convo" 
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold"
+            type="button">
+      End Conversation
+    </button>
+  </div>
+</section>
+<script>
+  const chatDiv = document.getElementById('chat');
+  const clearBtn = document.getElementById('clear-chat');
+  const endBtn = document.getElementById('end-convo');
+
+  clearBtn.addEventListener('click', () => {
+    // Clear all chat messages inside the chat div
+    chatDiv.innerHTML = '';
+  });
+
+  endBtn.addEventListener('click', () => {
+    // Clear chat
+    chatDiv.innerHTML = '';
+
+    // Optionally, show a goodbye message
+    const byeMessage = document.createElement('div');
+    byeMessage.classList.add('bot-message');
+    byeMessage.innerHTML = `
+      <div class="font-medium text-red-600 mb-1">SwasthyaAI</div>
+      <div>Goodbye! Take care.</div>
+    `;
+    chatDiv.appendChild(byeMessage);
+
+    // You can also disable the input and send button if you want to end interaction
+    document.getElementById('symptom').disabled = true;
+    document.querySelector('#chat-form button[type="submit"]').disabled = true;
+  });
+</script>
+
+
+    <!-- Teleconsultation -->
+    <section id="tele-section" class="bg-white rounded-xl shadow-md p-6">
+  <h2 class="text-xl font-semibold mb-4">Teleconsultation</h2>
+  <form id="teleconsult-form" style="margin-bottom:20px;">
+    <label class="block mb-2 text-sm">Pincode
+      <input type="number" name="pincode" required class="w-full p-2 border rounded-lg mb-3">
+    </label>
+    <label class="block mb-2 text-sm">City
+      <input type="text" name="city" required class="w-full p-2 border rounded-lg mb-3">
+    </label>
+    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-lg">FIND HOSPITALS</button>
+  </form>
+  <div id="teleconsult-result" class="mt-3"></div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('teleconsult-form');
+  const resultDiv = document.getElementById('teleconsult-result');
+
+  form.onsubmit = async function(e) {
+    e.preventDefault();
+    const pincode = this.pincode.value.trim();
+    const city = this.city.value.trim();
+
+    if (!pincode || !city) {
+      resultDiv.innerText = 'Please enter both pincode and city.';
+      return;
+    }
+
+    try {
+      const res = await fetch('/teleconsult', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `pincode=${encodeURIComponent(pincode)}&city=${encodeURIComponent(city)}`
+      });
+
+      if (!res.ok) {
+        resultDiv.innerText = `Server error: ${res.status} ${res.statusText}`;
+        return;
+      }
+
+      const data = await res.json();
+
+      if (data.status === 'success' && data.hospitals && data.hospitals.length) {
+        resultDiv.innerHTML = `
+          <strong>Hospitals from your nearby place are:</strong>
+          <ul class="list-disc list-inside mt-2">
+            ${data.hospitals.map(h => `
+              <li>
+                <strong style="color: #dc2626;">${h['hospital name']}</strong><br/>
+                ${h.address}, ${h.city}, ${h.state} - ${h['pin code']}
+              </li>
+            `).join('')}
+          </ul>
+        `;
+      } else if (data.status === 'error') {
+        resultDiv.innerText = 'Error: ' + data.message;
+      } else {
+        resultDiv.innerText = 'No hospitals found or saved.';
+      }
+    } catch (error) {
+      resultDiv.innerText = 'Error submitting teleconsultation: ' + error.message;
+    }
+  };
+});
+</script>
+
+
+
+        <!-- Logout Button -->
+    <div class="flex justify-center mt-10">
+      <button 
+        onclick="logout()" 
+        class="px-6 py-2 bg-red-600 text-white rounded-lg font-medium shadow-md hover:bg-red-700 transition"
+      >
+        Logout
+      </button>
+    </div>
+
+
+  </main>
+</div>
+
+
+<!-- JS Logic -->
+<script>
+  setTimeout(() => {
+          document.querySelectorAll('.flash-toast').forEach(el => {
+            el.style.transition = 'opacity 0.5s ease';
+            el.style.opacity = '0';
+            setTimeout(() => el.remove(), 500);
+          });
+        }, 3000);
+
+
+function calcBMI(){
+  let h = parseFloat(document.getElementById('bmi-height').value)/100;
+  let w = parseFloat(document.getElementById('bmi-weight').value);
+  if(!h || !w) return;
+  let bmi = (w/(h*h)).toFixed(1);
+  let status = '';
+  let advice = '';
+
+  if(bmi < 18.5) {
+    status = 'Underweight';
+    advice = 'Eat more nutritious food, include proteins, carbs, and healthy fats. Consider consulting a dietitian.';
+  }
+  else if(bmi < 24.9) {
+    status = 'Normal';
+    advice = 'Keep up with a balanced diet and regular exercise to maintain your weight.';
+  }
+  else if(bmi < 29.9) {
+    status = 'Overweight';
+    advice = 'Incorporate daily exercise and a healthy diet. Reduce sugary and fatty foods.';
+  }
+  else {
+    status = 'Obese';
+    advice = 'Consult a healthcare professional. Lifestyle changes and possible medications may be required.';
+  }
+
+  document.getElementById('bmi-result').innerHTML = `<strong>BMI:</strong> ${bmi} — <em>${status}</em><br><strong>Advice:</strong> ${advice}`;
+
+  // Save BMI data to backend
+  saveBMIToDB(h * 100, w, bmi);
+}
+
+async function saveBMIToDB(height, weight, bmi) {
+  try {
+    const res = await fetch('/save_bmi', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({height, weight, bmi})
+    });
+    const data = await res.json();
+    if(data.status === 'success'){
+      console.log('BMI data saved');
+    } else {
+      console.warn('Failed to save BMI data:', data.message);
+    }
+  } catch (error) {
+    console.error('Error saving BMI data:', error);
+  }
+}
+
+function checkBP(){ 
+  let sys = parseFloat(document.getElementById('bp-sys').value);
+  let dia = parseFloat(document.getElementById('bp-dia').value);
+  let sugar = parseFloat(document.getElementById('sugar').value);
+  let res = '';
+
+  // Blood Pressure check
+  if(sys < 90 || dia < 60) {
+    res += '<strong>Low Blood Pressure:</strong> Increase salt intake moderately, stay hydrated, avoid sudden standing.<br>';
+    res += 'Consult your doctor if you feel dizziness or fainting.<br><br>';
+  }
+  else if(sys > 140 || dia > 90) {
+    res += '<strong>High Blood Pressure:</strong> Reduce salt, avoid stress, exercise regularly, and maintain a healthy weight.<br>';
+    res += 'Consult your doctor for medications and monitoring.<br><br>';
+  }
+  else {
+    res += '<strong>Blood Pressure:</strong> Normal range. Maintain healthy habits.<br><br>';
+  }
+
+  // Blood Sugar check
+  if(sugar < 70) {
+    res += '<strong>Low Blood Sugar:</strong> Eat something sweet like fruit juice or glucose tablets immediately.<br>';
+  }
+  else if(sugar > 140) {
+    res += '<strong>High Blood Sugar:</strong> Avoid sugary foods, stay active, monitor regularly.<br>';
+    res += 'Consult your doctor for further management.<br>';
+  }
+  else {
+    res += '<strong>Blood Sugar:</strong> Normal range.<br>';
+  }
+
+  document.getElementById('bp-result').innerHTML = res;
+
+  // Save BP & sugar data to backend if valid inputs
+  if (sys && dia && sugar) {
+    saveBpSugarToDB(sys, dia, sugar);
+  }
+}
+
+async function saveBpSugarToDB(sys, dia, sugar) {
+  try {
+    const res = await fetch('/save_bp_sugar', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ sys, dia, sugar })
+    });
+    const data = await res.json();
+    if(data.status === 'success'){
+      console.log('BP & sugar data saved');
+    } else {
+      console.warn('Failed to save BP & sugar data:', data.message);
+    }
+  } catch (error) {
+    console.error('Error saving BP & sugar data:', error);
+  }
+}
+
+async function sendToServer(event) {
+  event.preventDefault();
+  const symptomInput = document.getElementById("symptom");
+  const message = symptomInput.value.trim();
+  if (!message) return;
+
+  const chatDiv = document.getElementById("chat");
+  chatDiv.innerHTML += `
+    <div class="user-message mt-2">
+      <div class="font-medium text-blue-600 mb-1">You</div>
+      <div>${message}</div>
+    </div>
+  `;
+
+  symptomInput.value = "";
+
+  try {
+    const res = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ symptom: message })
+    });
+    const data = await res.json();
+
+    chatDiv.innerHTML += `
+      <div class="bot-message mt-2">
+        <div class="font-medium text-red-600 mb-1">SwasthyaAI</div>
+        <div>${data.response}</div>
+      </div>
+    `;
+
+    chatDiv.scrollTop = chatDiv.scrollHeight;
+  } catch (err) {
+    console.error("Error fetching prediction:", err);
+    chatDiv.innerHTML += `
+      <div class="bot-message mt-2 text-red-500">⚠️ Error connecting to AI model.</div>
+    `;
+  }
+}
+
+async function listHospitals() {
+  let pincode = document.getElementById('pin').value.trim();
+  if (!pincode) {
+    document.getElementById('hospitals').innerHTML = '<p>Please enter a pincode.</p>';
+    return;
+  }
+  try {
+    const res = await fetch(`/hospitals?pincode=${pincode}`);
+    const data = await res.json();
+
+    if (data.hospitals.length > 0) {
+      // Clear container first
+      const container = document.getElementById('hospitals');
+      container.innerHTML = '';
+
+      data.hospitals.forEach(hospital => {
+        // Create a div with hospital details nicely formatted
+        const div = document.createElement('div');
+        div.className = 'p-3 bg-gray-100 rounded-lg mb-2';
+
+        // Use hospital properties - adjust keys if needed
+        div.innerHTML = `
+          <h3 class="font-semibold text-red-600">${hospital['hospital name'] || hospital.name || 'Hospital'}</h3>
+          <p>${hospital.address || ''}, ${hospital.city || ''}, ${hospital.state || ''} - ${hospital['pin code'] || ''}</p>
+        `;
+        container.appendChild(div);
+      });
+    } else {
+      document.getElementById('hospitals').innerHTML = '<p>No hospitals found for this pincode.</p>';
+    }
+  } catch (error) {
+    console.error("Error fetching hospitals:", error);
+    document.getElementById('hospitals').innerHTML = '<p>Error loading hospitals.</p>';
+  }
+}
+
+function logout(){
+  alert("✅ Successfully logged out!");
+  window.location.href = "/login"; // Redirect after showing message
+}
+
+function scrollToSection(id){
+  document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>

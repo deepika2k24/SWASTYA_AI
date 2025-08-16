@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SwasthyaAI Registration</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .auth-container {
+      background-color: #fff;
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .auth-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+
+    .auth-header img {
+      width: 72px;        /* larger, centered */
+      height: 72px;
+      object-fit: cover;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    .auth-header h2 {
+      margin: 0;
+      color: #d32f2f;
+      font-size: 1.5rem;
+      letter-spacing: 0.2px;
+    }
+
+    .message {
+      width: 100%;
+      text-align: center;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .message-success {
+      color: green;
+    }
+    .message-error {
+      color: crimson;
+    }
+
+    label { display: block; margin-top: 12px; margin-bottom: 6px; font-weight: 500; }
+    input[type="text"], input[type="email"], input[type="password"] {
+      width: 100%; padding: 10px; border: 1px solid #ccc;
+      border-radius: 6px; font-size: 14px;
+    }
+
+    .btn-red {
+      width: 100%;
+      background-color: #d32f2f;
+      color: white;
+      padding: 12px;
+      border: none;
+      border-radius: 6px;
+      margin-top: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .btn-red:hover { background-color: #b71c1c; }
+
+    .auth-footer { text-align: center; margin-top: 14px; font-size: 14px; }
+    .auth-footer a { color: #d32f2f; text-decoration: none; }
+    .auth-footer a:hover { text-decoration: underline; }
+
+    /* small responsive tweak */
+    @media (max-width:420px){
+      .auth-container { padding: 20px; }
+      .auth-header img { width:60px; height:60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-header">
+      <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="SwasthyaAI Logo" />
+            <div class="message {% if category == 'success' %}message-success{% else %}message-error{% endif %}">
+              {{ msg }}
+            </div>
+       <h2>SwasthyaAI Registration</h2> 
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, msg in messages %}
+            <div class="message {% if category == 'success' %}message-success{% else %}message-error{% endif %}">
+              {{ msg }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <form action="{{ url_for('register') }}" method="post">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+
+      <button type="submit" class="btn-red">Register</button>
+    </form>
+
+    <div class="auth-footer">
+      Already have an account? <a href="{{ url_for('login') }}">Login</a>
+    </div>
+  </div>
+<script>
+  // Optional: Add any JavaScript you need here
+</script>
+
+</body>
+</html>

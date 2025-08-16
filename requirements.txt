@@ -1,0 +1,11 @@
+flask
+flask-mysqldb
+spacy
+wikipedia-api
+requests
+beautifulsoup4
+tabula-py
+pandas
+scikit-learn
+joblib
+rapidfuzz

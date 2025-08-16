@@ -1,0 +1,107 @@
+/* ===== General Styles ===== */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background-color: #ffffff;
+    border-right: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 20px;
+}
+
+.sidebar .logo {
+    text-align: center;
+    padding: 10px;
+}
+
+.sidebar .logo img {
+    width: 60px;
+    height: auto;
+    border-radius: 50%;
+}
+
+.sidebar nav {
+    margin-top: 30px;
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 12px 20px;
+    color: #333;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+    background-color: #ffe6e6;
+    color: #b30000;
+    font-weight: bold;
+}
+
+/* ===== Main Content ===== */
+.main-content {
+    margin-left: 220px;
+    padding: 20px;
+}
+
+/* ===== Cards ===== */
+.card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 20px;
+    transition: box-shadow .2s;
+}
+
+.card:hover {
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ===== Forms ===== */
+form {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+}
+
+form input, form button, form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+form button {
+    background-color: #b30000;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+}
+
+form button:hover {
+    background-color: #800000;
+}
+
+/* ===== Headers ===== */
+h1, h2 {
+    color: #b30000;
+}
