@@ -42,7 +42,7 @@ pip install -r requirements.txt
 ```
 4. **Run the Flask application:**
 ```bash
-python app.py
+python app8.py
 ```
 
 5. **Open the app in your browser:**
