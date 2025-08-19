@@ -57,12 +57,13 @@ https://github.com/user-attachments/assets/40691a49-84e9-4fc9-9e55-bd79633422b6
 
 ## 🤝 Contributing
 
-We welcome contributions!
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+We’d love your help in making SWASTYA_AI better! How to add:
+1. Fork this repository
+2. Create a branch, e.g., `feature/your-feature`
+3. Commit with clear messages
+4. Push to your branch, create a Pull Request
+5. We’ll review and merge — thanks for collaborating!
+
 ---
 ⚖️ Licensed under the MIT License – applies to both the website code and related assets.
 
