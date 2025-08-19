@@ -49,6 +49,12 @@ python app8.py
 ```bash
 Go to: http://127.0.0.1:5000
 ```
+
+
+ **DEMO VIDEO:**
+ 
+https://github.com/user-attachments/assets/40691a49-84e9-4fc9-9e55-bd79633422b6
+
 ## 🤝 Contributing
 
 We welcome contributions!
