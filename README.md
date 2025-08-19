@@ -64,6 +64,7 @@ We welcome contributions!
 4. Push to the branch
 5. Create a Pull Request
 ---
+⚖️ Licensed under the MIT License – applies to both the website code and related assets.
 
 ❤️ Made with care — advancing healthcare through collaboration and innovation.
 
