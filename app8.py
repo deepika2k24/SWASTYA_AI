@@ -105,10 +105,10 @@ def extract_hospitals_by_pincode_excel(file_path, pincode, city=None):
 app = Flask(__name__, static_url_path='/static', static_folder='static')
 app.secret_key = 'your_secret_key_here'
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'deepu123'
-app.config['MYSQL_DB'] = 'swastyaai'
+app.config['MYSQL_HOST'] = '********'
+app.config['MYSQL_USER'] = '*****'
+app.config['MYSQL_PASSWORD'] = '*****'
+app.config['MYSQL_DB'] = '******'
 
 mysql = MySQL(app)
 
@@ -567,37 +567,6 @@ def chatbot_response(input_sentence):
     return "Please describe your symptoms, or let me know how I can assist you further."
 app.secret_key = 'yoursecretkey'  # needed for flash()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     message = ''
@@ -701,11 +670,6 @@ def chat():
         return jsonify({"response": "Sorry, something went wrong."}), 500
 
     return jsonify({"response": reply}), 200
-
-
-
-
-
 
 
 @app.route('/save_bp_sugar', methods=['POST'])
