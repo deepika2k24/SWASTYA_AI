@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: swastya-ai
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app8:app"
